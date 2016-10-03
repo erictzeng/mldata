@@ -73,7 +73,7 @@ class MNIST(DatasetGroup):
 
     def _read_images(self, path):
         """Read an MNIST image file."""
-        return self._read_datafile(path, 3) / 255
+        return self._read_datafile(path, 3).reshape(-1, 28, 28, 1) / 255
 
     def _read_labels(self, path):
         """Read an MNIST label file."""

@@ -57,6 +57,6 @@ class USPS(DatasetGroup):
                 labels.append(float(vals[0]))
                 images.append([float(val) for val in vals[1:]])
         labels = np.array(labels, dtype=np.float32)
-        images = np.array(images, dtype=np.float32).reshape(-1, 16, 16)
+        images = np.array(images, dtype=np.float32).reshape(-1, 16, 16, 1)
         images = (images + 1) / 2
         return images, labels
