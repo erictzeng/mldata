@@ -18,6 +18,8 @@ class ImageTransformer(object):
         """Converts RGB to luminance, following BT.601."""
         if im.shape[2] == 3:
             return (im * [.299, .587, .114]).sum(axis=2)[:, :, np.newaxis]
+        else:
+            return im
 
     def preprocess(self, im):
         if self.grayscale:
