@@ -39,6 +39,9 @@ class Dataset(object):
     def __len__(self):
         return len(self.labels)
 
+    def get_image(self, i):
+        return self.images[i]
+
     def mask(self, inds):
         """Subselect only a portion of the dataset.
 
