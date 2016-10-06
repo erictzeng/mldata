@@ -5,12 +5,11 @@ import urlparse
 import numpy as np
 from scipy.io import loadmat
 
-import mldata.util
-from mldata.dataset import Dataset
-from mldata.dataset import DatasetGroup
+from mldata import dataset
+from mldata import util
 
 
-class CroppedSVHN(DatasetGroup):
+class CroppedSVHN(dataset.DatasetGroup):
     """The Street View House Numbers Dataset.
 
     This DatasetGroup corresponds to format 2, which consists of center-cropped
@@ -30,7 +29,7 @@ class CroppedSVHN(DatasetGroup):
             }
 
     def __init__(self, path=None, train_on_extra=False):
-        DatasetGroup.__init__(self, 'svhn_cropped', path=path)
+        dataset.DatasetGroup.__init__(self, 'svhn_cropped', path=path)
         self.train_on_extra = train_on_extra
         self._load_datasets()
 
@@ -38,7 +37,7 @@ class CroppedSVHN(DatasetGroup):
         for filename in self.data_files.values():
             url = urlparse.urljoin(self.base_url, filename)
             dest = self.get_path(filename)
-            mldata.util.maybe_download(url, dest)
+            util.maybe_download(url, dest)
 
     def _load_datasets(self):
         abspaths = {name: self.get_path(path)
@@ -57,5 +56,5 @@ class CroppedSVHN(DatasetGroup):
         test_images = test_mat['X'].transpose((3, 0, 1, 2))
         test_images = test_images.astype(np.float32) / 255
         test_labels = test_mat['y'].squeeze()
-        self.train = Dataset(train_images, train_labels)
-        self.test = Dataset(test_images, test_labels)
+        self.train = dataset.Dataset(train_images, train_labels)
+        self.test = dataset.Dataset(test_images, test_labels)

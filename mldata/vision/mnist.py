@@ -9,15 +9,14 @@ import urlparse
 
 import numpy as np
 
-import mldata.util
-from mldata.dataset import Dataset
-from mldata.dataset import DatasetGroup
+from mldata import dataset
+from mldata import util
 
 
 logger = logging.getLogger(__name__)
 
 
-class MNIST(DatasetGroup):
+class MNIST(dataset.DatasetGroup):
     """The MNIST database of handwritten digits.
 
     Homepage: http://yann.lecun.com/exdb/mnist/
@@ -35,14 +34,14 @@ class MNIST(DatasetGroup):
             }
 
     def __init__(self, path=None):
-        DatasetGroup.__init__(self, 'mnist', path=path)
+        dataset.DatasetGroup.__init__(self, 'mnist', path=path)
         self._load_datasets()
 
     def download(self):
         for filename in self.data_files.values():
             url = urlparse.urljoin(self.base_url, filename)
             dest = self.get_path(filename)
-            mldata.util.maybe_download(url, dest)
+            util.maybe_download(url, dest)
 
     def _load_datasets(self):
         abspaths = {name: self.get_path(path)
@@ -51,8 +50,8 @@ class MNIST(DatasetGroup):
         train_labels = self._read_labels(abspaths['train_labels'])
         test_images = self._read_images(abspaths['test_images'])
         test_labels = self._read_labels(abspaths['test_labels'])
-        self.train = Dataset(train_images, train_labels)
-        self.test = Dataset(test_images, test_labels)
+        self.train = dataset.Dataset(train_images, train_labels)
+        self.test = dataset.Dataset(test_images, test_labels)
 
     def _read_datafile(self, path, expected_dims):
         """Helper function to read a file in IDX format."""

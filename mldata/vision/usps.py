@@ -7,15 +7,14 @@ import urlparse
 
 import numpy as np
 
-import mldata.util
-from mldata.dataset import Dataset
-from mldata.dataset import DatasetGroup
+from mldata import util
+from mldata import dataset
 
 
 logger = logging.getLogger(__name__)
 
 
-class USPS(DatasetGroup):
+class USPS(dataset.DatasetGroup):
     """USPS handwritten digits.
 
     Homepage: http://statweb.stanford.edu/~tibs/ElemStatLearn/data.html
@@ -31,22 +30,22 @@ class USPS(DatasetGroup):
         }
 
     def __init__(self, path=None):
-        DatasetGroup.__init__(self, 'usps', path=path)
+        dataset.DatasetGroup.__init__(self, 'usps', path=path)
         self._load_datasets()
 
     def download(self):
         for filename in self.data_files.values():
             url = urlparse.urljoin(self.base_url, filename)
             dest = os.path.join(self.path, filename)
-            mldata.util.maybe_download(url, dest)
+            util.maybe_download(url, dest)
 
     def _load_datasets(self):
         abspaths = {name: self.get_path(path)
                     for name, path in self.data_files.items()}
         train_images, train_labels = self._read_datafile(abspaths['train'])
         test_images, test_labels = self._read_datafile(abspaths['test'])
-        self.train = Dataset(train_images, train_labels)
-        self.test = Dataset(test_images, test_labels)
+        self.train = dataset.Dataset(train_images, train_labels)
+        self.test = dataset.Dataset(test_images, test_labels)
 
     def _read_datafile(self, path):
         """Read the proprietary USPS digits data file."""

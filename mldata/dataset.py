@@ -4,6 +4,9 @@ import numpy as np
 import mldata.util
 
 
+# Registry to refer to datasets by their name
+_registry = {}
+
 class DatasetGroup(object):
 
     def __init__(self, name, path=None):
@@ -76,3 +79,21 @@ class Dataset(object):
         self._inds = self._mask.copy()
         if self.shuffle:
             np.random.shuffle(self._inds)
+
+
+def register_dataset(name):
+    """Decorator to register a dataset under a given name."""
+    def decorator(cls):
+        if name in _registry:
+            raise KeyError('Duplicate name for dataset: {}'.format(name))
+        _registry[name] = cls
+        return cls
+    return decorator
+
+
+def make_dataset(name, *args, **kwargs):
+    """Create a DatasetGroup based on its registered name."""
+    if name not in _registry:
+        raise KeyError('Dataset not found: {}'.format(name))
+    cls = _registry[name]
+    return cls(*args, **kwargs)
