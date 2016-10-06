@@ -14,6 +14,7 @@ from mldata import dataset
 logger = logging.getLogger(__name__)
 
 
+@dataset.register_dataset('usps')
 class USPS(dataset.DatasetGroup):
     """USPS handwritten digits.
 

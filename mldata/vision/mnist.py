@@ -16,6 +16,7 @@ from mldata import util
 logger = logging.getLogger(__name__)
 
 
+@dataset.register_dataset('mnist')
 class MNIST(dataset.DatasetGroup):
     """The MNIST database of handwritten digits.
 

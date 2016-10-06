@@ -9,6 +9,7 @@ from mldata import dataset
 from mldata import util
 
 
+@dataset.register_dataset('svhn_cropped')
 class CroppedSVHN(dataset.DatasetGroup):
     """The Street View House Numbers Dataset.
 
