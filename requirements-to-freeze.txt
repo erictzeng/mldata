@@ -1,0 +1,6 @@
+numpy
+pyxdg
+PyYAML
+requests
+scikit-image
+scipy
