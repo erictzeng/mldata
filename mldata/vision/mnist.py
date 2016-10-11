@@ -67,13 +67,16 @@ class MNIST(dataset.DatasetGroup):
             dims = struct.unpack('>' + 'I' * expected_dims,
                                  f.read(4 * expected_dims))
             buf = f.read(reduce(operator.mul, dims))
-            data = np.frombuffer(buf, dtype=np.uint8).astype(np.float32)
+            data = np.frombuffer(buf, dtype=np.uint8)
             data = data.reshape(*dims)
             return data
 
     def _read_images(self, path):
         """Read an MNIST image file."""
-        return self._read_datafile(path, 3).reshape(-1, 28, 28, 1) / 255
+        return (self._read_datafile(path, 3)
+                .astype(np.float32)
+                .reshape(-1, 28, 28, 1)
+                / 255)
 
     def _read_labels(self, path):
         """Read an MNIST label file."""
