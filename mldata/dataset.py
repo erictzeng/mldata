@@ -1,7 +1,10 @@
 import os
 import numpy as np
+import skimage
+import skimage.io
 
 import mldata.util
+from .transform import ImageTransformer
 
 
 # Registry to refer to datasets by their name
@@ -56,8 +59,7 @@ class Dataset(object):
             self._mask = inds
         self._reset_inds()
 
-    def next_batch(self, n):
-        """Return an (images, labels) tuple containing the next batch."""
+    def _next_batch_inds(self, n):
         inds = np.array([], dtype=np.int)
         while len(inds) < n:
             remaining = n - len(inds)
@@ -67,6 +69,11 @@ class Dataset(object):
                 # completed full pass through dataset
                 self._reset_inds()
                 self.epochs_completed += 1
+        return inds
+
+    def next_batch(self, n):
+        """Return an (images, labels) tuple containing the next batch."""
+        inds = self._next_batch_inds(n)
         images = self.images[inds]
         labels = self.labels[inds]
         return images, labels
@@ -79,6 +86,27 @@ class Dataset(object):
         self._inds = self._mask.copy()
         if self.shuffle:
             np.random.shuffle(self._inds)
+
+
+class ImageDataset(Dataset):
+
+    def __init__(self, image_paths, labels, image_size, shuffle=True):
+        Dataset.__init__(self, image_paths, labels, shuffle=shuffle)
+        self.transformer = ImageTransformer(image_size=image_size)
+
+    def get_image(self, i):
+        im = skimage.io.imread(self.images[i])
+        im = skimage.img_as_float(im)
+        return self.transformer.preprocess(im)
+
+    def next_batch(self, n):
+        inds = self._next_batch_inds(n)
+        batch = []
+        for ind in inds:
+            batch.append(self.get_image(ind))
+        images = np.stack(batch, axis=0)
+        labels = self.labels[inds]
+        return images, labels
 
 
 def register_dataset(name):
