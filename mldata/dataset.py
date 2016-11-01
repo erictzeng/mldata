@@ -48,6 +48,10 @@ class Dataset(object):
     def get_image(self, i):
         return self.images[i]
 
+    def subsample(self, n):
+        mask = np.sort(np.random.choice(range(len(self)), n, replace=False))
+        self.mask(mask)
+
     def mask(self, inds):
         """Subselect only a portion of the dataset.
 
