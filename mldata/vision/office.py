@@ -5,6 +5,7 @@ import logging
 import os
 
 import numpy as np
+import skimage
 from skimage.transform import resize
 from skimage.io import imread, imsave
 
@@ -33,8 +34,8 @@ class Office(dataset.DatasetGroup):
         self._load_datasets()
 
     def _cache_path(self, *args):
-        return os.path.join('/tmp', 'mldata', '{}-{}'.format(*self.image_size),
-                            self.name, *args)
+        return os.path.join('/tmp', 'mldata', self.name,
+                            '{}-{}'.format(*self.image_size), *args)
 
     def download(self):
         pass
@@ -51,7 +52,9 @@ class Office(dataset.DatasetGroup):
                     labels.append(self.classes.index(label))
                     cachepath = self._cache_path(domain, label, filename)
                     if os.path.exists(cachepath):
-                        images.append(imread(cachepath))
+                        im = imread(cachepath)
+                        im = skimage.img_as_float(im)
+                        images.append(im)
                     else:
                         fullpath = os.path.join(dirpath, filename)
                         im = resize(imread(fullpath), self.image_size)
